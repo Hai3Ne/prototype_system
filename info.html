@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talent Tree System - Technical Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 30px 0;
+            border-bottom: 3px solid #667eea;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: #667eea;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header .subtitle {
+            font-size: 1.2rem;
+            color: #666;
+            font-weight: 300;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .nav-btn {
+            padding: 12px 24px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .section {
+            margin: 40px 0;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            border-left: 5px solid #667eea;
+        }
+
+        .section h2 {
+            font-size: 1.8rem;
+            color: #667eea;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section h3 {
+            font-size: 1.4rem;
+            color: #764ba2;
+            margin: 25px 0 15px 0;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 8px;
+        }
+
+        .visual-diagram {
+            background: #f8f9fa;
+            border: 2px dashed #667eea;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 25px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .visual-diagram::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(102, 126, 234, 0.05), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .diagram-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .level-layout {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin: 20px 0;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .node-visual {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .node-normal { background: linear-gradient(45deg, #4CAF50, #45a049); }
+        .node-special { background: linear-gradient(45deg, #FF6B6B, #FF5252); }
+        .node-level { 
+            background: linear-gradient(45deg, #667eea, #764ba2); 
+            width: 40px; 
+            height: 40px;
+            font-size: 12px;
+        }
+
+        .arrow {
+            font-size: 24px;
+            color: #667eea;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #dee2e6;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-card h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .feature-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-table th {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .feature-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .feature-table tr:hover {
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .code-snippet {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .code-snippet::before {
+            content: 'JavaScript';
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            background: #667eea;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 600;
+        }
+
+        .flow-diagram {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .flow-step {
+            background: white;
+            padding: 15px 25px;
+            border-radius: 25px;
+            border: 2px solid #667eea;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .flow-arrow {
+            font-size: 20px;
+            color: #667eea;
+        }
+
+        .architecture-visual {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 25px 0;
+        }
+
+        .file-structure {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .file-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .file-card.html { border-left-color: #e34c26; }
+        .file-card.css { border-left-color: #1572b6; }
+        .file-card.js { border-left-color: #f7df1e; }
+
+        .performance-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .metric-card {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .metric-number {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .back-to-demo {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 15px;
+            }
+            
+            .level-layout {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            
+            .node-visual {
+                width: 45px;
+                height: 45px;
+                font-size: 12px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="nav-btn back-to-demo">← Back to Demo</a>
+
+    <div class="container">
+        <div class="header">
+            <h1>🎮 Talent Tree System</h1>
+            <p class="subtitle">Complete Technical Documentation & Architecture Guide</p>
+        </div>
+
+        <div class="nav-buttons">
+            <a href="#overview" class="nav-btn">📖 Overview</a>
+            <a href="#architecture" class="nav-btn">🏗️ Architecture</a>
+            <a href="#features" class="nav-btn">✨ Features</a>
+            <a href="#implementation" class="nav-btn">⚡ Implementation</a>
+        </div>
+
+        <!-- System Overview -->
+        <div class="section" id="overview">
+            <h2>📖 System Overview</h2>
+            
+            <p>Hệ thống <span class="highlight">Talent Tree</span> là một giao diện progression RPG hoàn chỉnh được thiết kế cho mobile-first với 60 nodes phân bố qua 15 levels, tích hợp hệ thống tiền tệ kép và logic progression phức tạp.</p>
+
+            <div class="performance-metrics">
+                <div class="metric-card">
+                    <div class="metric-number">60</div>
+                    <div>Total Nodes</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-number">15</div>
+                    <div>Character Levels</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-number">2</div>
+                    <div>Currency Types</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-number">360×720</div>
+                    <div>Mobile Resolution</div>
+                </div>
+            </div>
+
+            <h3>🎯 Core Game Mechanics</h3>
+            <div class="visual-diagram">
+                <div class="diagram-content">
+                    <h4>Node Progression Flow</h4>
+                    <div class="flow-diagram">
+                        <div class="flow-step">Player starts at Node 0 (ATK Level 1)</div>
+                        <div class="flow-arrow">⬇️</div>
+                        <div class="flow-step">Sequential: ATK → DEF → SPD → HEAL</div>
+                        <div class="flow-arrow">⬇️</div>
+                        <div class="flow-step">Complete 4 nodes = Level Complete</div>
+                        <div class="flow-arrow">⬇️</div>
+                        <div class="flow-step">Special Skill becomes available</div>
+                        <div class="flow-arrow">⬇️</div>
+                        <div class="flow-step">Manual Level Up → Next Level Access</div>
+                    </div>
+                </div>
+            </div>
+
+            <h3>🔧 Level Layout Structure</h3>
+            <div class="visual-diagram">
+                <div class="diagram-content">
+                    <h4>Single Level Visual Layout</h4>
+                    <div class="level-layout">
+                        <div class="node-visual node-normal">ATK</div>
+                        <span class="arrow">→</span>
+                        <div class="node-visual node-normal">DEF</div>
+                        <span class="arrow">→</span>
+                        <div class="node-visual node-normal">SPD</div>
+                        <span class="arrow">→</span>
+                        <div class="node-visual node-normal">HEAL</div>
+                    </div>
+                    <div style="margin: 20px 0; font-weight: bold;">Left: Normal Stats | Center: Level Display | Right: Special Skills</div>
+                    <div class="level-layout">
+                        <div style="flex: 1; text-align: center;">
+                            <div class="node-visual node-normal" style="margin: 0 auto;">STAT</div>
+                            <p style="margin-top: 10px; font-size: 14px;">70×70px<br>Gold Currency</p>
+                        </div>
+                        <div style="flex: 1; text-align: center;">
+                            <div class="node-visual node-level" style="margin: 0 auto;">Lv.X</div>
+                            <p style="margin-top: 10px; font-size: 14px;">35×35px<br>Display Only</p>
+                        </div>
+                        <div style="flex: 1; text-align: center;">
+                            <div class="node-visual node-special" style="margin: 0 auto;">SPEC</div>
+                            <p style="margin-top: 10px; font-size: 14px;">75×75px<br>Orc Currency</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Architecture -->
+        <div class="section" id="architecture">
+            <h2>🏗️ System Architecture</h2>
+
+            <h3>📁 File Structure & Modular Design</h3>
+            <div class="architecture-visual">
+                <div class="file-structure">
+                    <div class="file-card html">
+                        <h4>📄 index.html (56 lines)</h4>
+                        <ul>
+                            <li>✅ Mobile container structure</li>
+                            <li>✅ Header & currency display</li>
+                            <li>✅ Talent tree container</li>
+                            <li>✅ Control panels & tooltips</li>
+                            <li>✅ Information modal system</li>
+                        </ul>
+                        <div class="code-snippet">
+&lt;div class="mobile-container"&gt;
+  &lt;div class="talent-tree-container"&gt;
+    &lt;div class="talent-content"&gt;
+      &lt;!-- Generated by JS --&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</div>
+                    </div>
+
+                    <div class="file-card css">
+                        <h4>🎨 styles.css (450+ lines)</h4>
+                        <ul>
+                            <li>✅ Mobile-first responsive design</li>
+                            <li>✅ Node animations & effects</li>
+                            <li>✅ Background progress system</li>
+                            <li>✅ Tooltip & modal styling</li>
+                            <li>✅ Hardware-accelerated transitions</li>
+                        </ul>
+                        <div class="code-snippet">
+.node {
+  transition: all 0.3s ease;
+  transform: translateZ(0);
+}
+
+.node.glowing {
+  animation: glow 2s infinite;
+  box-shadow: 0 0 20px currentColor;
+}</div>
+                    </div>
+
+                    <div class="file-card js">
+                        <h4>⚡ script.js (400+ lines)</h4>
+                        <ul>
+                            <li>✅ Game state management</li>
+                            <li>✅ Node creation & updates</li>
+                            <li>✅ Progression logic</li>
+                            <li>✅ Event handling & UI</li>
+                            <li>✅ Modal & tooltip systems</li>
+                        </ul>
+                        <div class="code-snippet">
+function updateNodeState(nodeIndex) {
+  const node = document.getElementById(`node-${nodeIndex}`);
+  const isCompleted = completedNodes.has(nodeIndex);
+  const isCurrent = nodeIndex === currentNodeIndex;
+  
+  updateVisualState(node, isCompleted, isCurrent);
+}</div>
+                    </div>
+                </div>
+            </div>
+
+            <h3>🔄 Data Flow Architecture</h3>
+            <div class="visual-diagram">
+                <div class="diagram-content">
+                    <h4>State Management Flow</h4>
+                    <div class="flow-diagram">
+                        <div class="flow-step">User Action (Click Node)</div>
+                        <div class="flow-arrow">⬇️</div>
+                        <div class="flow-step">Validate Requirements (Level + Currency)</div>
+                        <div class="flow-arrow">⬇️</div>
+                        <div class="flow-step">Update Game State (currentNodeIndex, completedNodes)</div>
+                        <div class="flow-arrow">⬇️</div>
+                        <div class="flow-step">Refresh Visual Elements (Nodes, Background, UI)</div>
+                        <div class="flow-arrow">⬇️</div>
+                        <div class="flow-step">Update Progress Indicators & Tooltips</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features -->
+        <div class="section" id="features">
+            <h2>✨ Advanced Features</h2>
+
+            <h3>💰 Dual Currency System</h3>
+            <table class="feature-table">
+                <thead>
+                    <tr>
+                        <th>Currency Type</th>
+                        <th>Usage</th>
+                        <th>Cost Formula</th>
+                        <th>Visual Indicator</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Gold 🏆</strong></td>
+                        <td>Normal stat nodes (ATK, DEF, SPD, HEAL)</td>
+                        <td>50 + (level × 10)</td>
+                        <td>Gold coin icon in header</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Orc ⚔️</strong></td>
+                        <td>Special skill nodes (milestone abilities)</td>
+                        <td>1-3 Orc based on level tier</td>
+                        <td>Orc skull icon in header</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>🎨 Visual Effect System</h3>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h4>🌟 Node States</h4>
+                    <ul>
+                        <li><strong>Current:</strong> Glowing animation + bright colors</li>
+                        <li><strong>Completed:</strong> Green checkmark + solid fill</li>
+                        <li><strong>Locked:</strong> Grayed out + reduced opacity</li>
+                        <li><strong>Available:</strong> Normal colors + hover effects</li>
+                    </ul>
+                </div>
+
+                <div class="stat-card">
+                    <h4>📊 Background Progress</h4>
+                    <ul>
+                        <li><strong>Dynamic Height:</strong> Rises with completion %</li>
+                        <li><strong>Gradient Colors:</strong> Blue to purple transition</li>
+                        <li><strong>Real-time Update:</strong> Smooth animations</li>
+                        <li><strong>Visual Feedback:</strong> Progress transparency</li>
+                    </ul>
+                </div>
+
+                <div class="stat-card">
+                    <h4>🎯 Interactive Elements</h4>
+                    <ul>
+                        <li><strong>Tooltips:</strong> Hover for detailed info</li>
+                        <li><strong>Scroll Indicator:</strong> Current level display</li>
+                        <li><strong>Touch Feedback:</strong> Mobile-optimized responses</li>
+                        <li><strong>Smooth Scrolling:</strong> Auto-scroll to current node</li>
+                    </ul>
+                </div>
+
+                <div class="stat-card">
+                    <h4>🔧 Control Systems</h4>
+                    <ul>
+                        <li><strong>Navigation:</strong> Start/Current/End buttons</li>
+                        <li><strong>Testing:</strong> Add Orc & Level Up controls</li>
+                        <li><strong>Reset:</strong> Complete progress reset</li>
+                        <li><strong>Information:</strong> Comprehensive documentation</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>🔒 Access Control Logic</h3>
+            <div class="visual-diagram">
+                <div class="diagram-content">
+                    <h4>Level-Gated Progression Rules</h4>
+                    <div class="code-snippet">
+// Node Access Validation
+const requiredLevel = Math.floor(nodeIndex / 4) + 1;
+const hasLevel = playerLevel >= requiredLevel;
+const hasSequence = nodeIndex <= currentNodeIndex;
+const hasCurrency = checkCurrencyRequirement(nodeIndex);
+
+const canUpgrade = hasLevel && hasSequence && hasCurrency;</div>
+                    
+                    <div style="margin-top: 20px;">
+                        <strong>Key Rules:</strong>
+                        <ul style="text-align: left; margin-top: 10px;">
+                            <li>🔐 Must reach required level first</li>
+                            <li>📈 Cannot skip nodes in sequence</li>
+                            <li>💰 Must have sufficient currency</li>
+                            <li>⭐ Special skills require level completion</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Implementation -->
+        <div class="section" id="implementation">
+            <h2>⚡ Technical Implementation</h2>
+
+            <h3>🚀 Performance Optimizations</h3>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h4>🎨 CSS Optimization</h4>
+                    <ul>
+                        <li><strong>Hardware Acceleration:</strong> transform3d(), translateZ(0)</li>
+                        <li><strong>Efficient Animations:</strong> CSS transitions vs JavaScript</li>
+                        <li><strong>Optimized Selectors:</strong> Minimal DOM queries</li>
+                        <li><strong>Responsive Design:</strong> Mobile-first approach</li>
+                    </ul>
+                </div>
+
+                <div class="stat-card">
+                    <h4>⚡ JavaScript Efficiency</h4>
+                    <ul>
+                        <li><strong>Event Delegation:</strong> Efficient event handling</li>
+                        <li><strong>State Caching:</strong> Minimal recalculations</li>
+                        <li><strong>Targeted Updates:</strong> Only changed elements</li>
+                        <li><strong>Memory Management:</strong> Proper cleanup</li>
+                    </ul>
+                </div>
+
+                <div class="stat-card">
+                    <h4>📱 Mobile Optimization</h4>
+                    <ul>
+                        <li><strong>Touch Targets:</strong> 70×70px minimum size</li>
+                        <li><strong>Smooth Scrolling:</strong> Native scroll behavior</li>
+                        <li><strong>Responsive Layout:</strong> Flexible grid system</li>
+                        <li><strong>Performance:</strong> 60fps animations</li>
+                    </ul>
+                </div>
+
+                <div class="stat-card">
+                    <h4>🔧 Code Quality</h4>
+                    <ul>
+                        <li><strong>Modular Structure:</strong> Separated concerns</li>
+                        <li><strong>Clean Functions:</strong> Single responsibility</li>
+                        <li><strong>Consistent Naming:</strong> Clear conventions</li>
+                        <li><strong>Documentation:</strong> Comprehensive comments</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>🎯 Key Functions Overview</h3>
+            <div class="code-snippet">
+// Core Game Functions
+initializeTalentTree()     // Setup initial game state
+createNodeElement()        // Generate node HTML structure
+updateNodeState()          // Refresh node visual state
+upgradeCurrentStat()       // Handle node upgrade logic
+updateProgressBackground() // Dynamic background effects
+scrollToCurrentNode()      // Navigation & UX
+showStatTooltip()         // Information display system</div>
+
+            <h3>📋 Development Checklist</h3>
+            <table class="feature-table">
+                <thead>
+                    <tr>
+                        <th>Feature Category</th>
+                        <th>Implementation Status</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>✅ Core Progression Logic</td>
+                        <td>Complete</td>
+                        <td>Sequential node access with level gating</td>
+                    </tr>
+                    <tr>
+                        <td>✅ Visual Effects System</td>
+                        <td>Complete</td>
+                        <td>Animations, glow effects, progress background</td>
+                    </tr>
+                    <tr>
+                        <td>✅ Mobile Responsive Design</td>
+                        <td>Complete</td>
+                        <td>360×720px optimized, touch-friendly</td>
+                    </tr>
+                    <tr>
+                        <td>✅ Dual Currency System</td>
+                        <td>Complete</td>
+                        <td>Gold for stats, Orc for special skills</td>
+                    </tr>
+                    <tr>
+                        <td>✅ Information Documentation</td>
+                        <td>Complete</td>
+                        <td>Modal system with technical details</td>
+                    </tr>
+                    <tr>
+                        <td>✅ Code Modularization</td>
+                        <td>Complete</td>
+                        <td>Separated HTML/CSS/JS files</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>🎮 Usage Examples</h3>
+            <div class="visual-diagram">
+                <div class="diagram-content">
+                    <h4>Perfect For These Projects:</h4>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h4>🎮 RPG Games</h4>
+                            <p>Character progression, skill trees, talent systems</p>
+                        </div>
+                        <div class="stat-card">
+                            <h4>📱 Mobile Apps</h4>
+                            <p>Achievement systems, progress tracking, gamification</p>
+                        </div>
+                        <div class="stat-card">
+                            <h4>🎯 Training Systems</h4>
+                            <p>Learning paths, course progression, skill development</p>
+                        </div>
+                        <div class="stat-card">
+                            <h4>💼 Business Apps</h4>
+                            <p>Employee development, goal tracking, milestone systems</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <a href="index.html" class="nav-btn">🎮 Back to Demo</a>
+            <a href="#overview" class="nav-btn">📖 Top</a>
+        </div>
+    </div>
+
+    <script>
+        // Smooth scroll for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add scroll effect for sections
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.transform = 'translateY(0)';
+                    entry.target.style.opacity = '1';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all sections
+        document.querySelectorAll('.section').forEach(section => {
+            section.style.transform = 'translateY(20px)';
+            section.style.opacity = '0.8';
+            section.style.transition = 'all 0.6s ease';
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>
