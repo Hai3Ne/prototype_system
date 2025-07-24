@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talent Tree System - Game Design Document</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        h1, h2, h3 { color: #333; }
+        .nav-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #007cba;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Talent Tree System</h1>
+        <h2>Game Design Document</h2>
+        
+        <h3>Tổng quan hệ thống</h3>
+        <p>Talent Tree System là hệ thống nâng cấp nhân vật với 60 node được sắp xếp trong 15 level. Player dùng Gold và Orc để unlock các talent, mỗi talent tăng sức mạnh nhân vật theo cách khác nhau.</p>
+        
+        <h3>Economy & Resources</h3>
+        <p><strong>Gold:</strong> Currency chính để unlock talent. Cost tăng dần theo level (50 + level × 10).</p>
+        <p><strong>Orc:</strong> Currency hiếm để unlock talent mạnh. Cost từ 1-3 Orc tùy theo tier.</p>
+        <p><strong>Level Up:</strong> Player tự quyết định khi nào level up. Mỗi level có 4 talent nodes.</p>
+        
+        <h3>Progression Rules</h3>
+        <p><strong>Linear Unlock:</strong> Phải unlock talent theo thứ tự, không được skip.</p>
+        <p><strong>Level Requirement:</strong> Phải đủ level thì mới unlock được talent của level đó.</p>
+        <p><strong>Resource Check:</strong> Phải đủ Gold/Orc thì mới unlock được talent.</p>
+        
+        <h3>Talent Types</h3>
+        <p><strong>Basic Talents:</strong> Tăng stats cơ bản như HP, Attack, Defense. Cost bằng Gold.</p>
+        <p><strong>Special Talents:</strong> Tăng stats đặc biệt như Crit Rate, Speed. Cost bằng Orc.</p>
+        <p><strong>Ultimate Talents:</strong> Talent mạnh nhất mỗi tier. Cost nhiều Orc.</p>
+        
+        <h3>Game Features</h3>
+        <p><strong>Visual Feedback:</strong> Node sáng lên khi unlock, effect animation khi activate.</p>
+        <p><strong>Touch Control:</strong> Tap để chọn talent, drag để scroll talent tree.</p>
+        <p><strong>Progress Tracking:</strong> Hiển thị số talent đã unlock, còn lại bao nhiêu để hoàn thành.</p>
+        <p><strong>Save System:</strong> Tự động save progress khi unlock talent.</p>
+        
+        <h3>Mobile Optimization</h3>
+        <p><strong>Screen Size:</strong> Thiết kế cho màn hình 360x720px, responsive cho các size khác.</p>
+        <p><strong>Performance:</strong> Smooth 60fps, loading nhanh, memory optimization.</p>
+        <p><strong>Touch Friendly:</strong> Button size đủ lớn, gesture controls tự nhiên.</p>
+        
+        <h3>Node Structure</h3>
+        <p>Level 1-3: Basic talents, chỉ cost Gold</p>
+        <p>Level 4-6: Mixed talents, cost Gold và một ít Orc</p>
+        <p>Level 7-9: Special talents, cost nhiều Orc hơn</p>
+        <p>Level 10-12: Advanced talents, cost cao cả Gold và Orc</p>
+        <p>Level 13-15: Ultimate talents, cost rất nhiều Orc</p>
+        
+        <h3>Player Experience</h3>
+        <p>Player bắt đầu với Level 1, có sẵn một ít Gold và Orc. Unlock talent đầu tiên để cảm nhận sự tăng trưởng sức mạnh. Tiếp tục unlock theo thứ tự để mở level mới. Quản lý resources cẩn thận để unlock được talent mong muốn.</p>
+        
+        <a href="index.html" class="nav-btn">🎮 Back to Demo</a>
+    </div>
+</body>
+</html>

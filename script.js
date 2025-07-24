@@ -214,13 +214,22 @@ function updateProgressBackground() {
     const progressBg = document.getElementById('progressBackground');
     if (!progressBg) return;
     
-    // Tính toán chiều cao dựa trên tiến độ thực tế (số nodes đã hoàn thành)
+    // Tính toán chiều cao dựa trên vị trí current node
     const totalHeight = 5000; // Chiều cao tổng của talent-content
-    // Background dâng lên theo số nodes đã hoàn thành
-    const progressPercentage = (currentNodeIndex / totalNodes) * 100; // Dựa trên tiến độ thực tế
-    const progressHeight = (progressPercentage / 100) * totalHeight;
+    const nodeSpacing = 100; // Khoảng cách giữa các node (margin-bottom từ CSS)
+    const nodeHeight = 80; // Chiều cao của mỗi level-block
+    const paddingBottom = 20; // Padding bottom của talent-content
     
-    progressBg.style.height = `${progressHeight}px`;
+    // Nodes được tạo từ 59 (top của DOM) xuống 0 (bottom của DOM)
+    // currentNodeIndex = 0 ở bottom, currentNodeIndex = 59 ở top
+    // Background dâng từ bottom lên, nên cần tính vị trí từ bottom
+    
+    // Vị trí của current node từ đáy lên (bao gồm cả current node)
+    const nodesFromBottom = currentNodeIndex + 1; // +1 để bao gồm current node
+    const backgroundHeight = paddingBottom + (nodesFromBottom * (nodeHeight + nodeSpacing)) - (nodeSpacing / 2);
+    
+    // Background dâng lên đến giữa current node
+    progressBg.style.height = `${Math.min(backgroundHeight, totalHeight)}px`;
 }
 
 // Update special skill state (independent of normal nodes)
